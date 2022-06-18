@@ -68,7 +68,7 @@ export default class Pdf extends Component {
         onLayout: PropTypes.bool,
         accessibilityLiveRegion: PropTypes.string,
         accessibilityComponentType: PropTypes.string,
-        loaderStyle: PropsTypes.any,
+        loaderStyle: PropTypes.any,
     };
 
     static defaultProps = {
