@@ -52,6 +52,7 @@ interface Props {
     onPageSingleTap?: (page: number, x: number, y: number) => void,
     onScaleChanged?: (scale: number) => void,
     onPressLink?: (url: string) => void,
+    loaderStyle?: ReactNative.StyleProp<ReactNative.StylePro>
 }
 
 declare class Pdf extends React.Component<Props, any> {
