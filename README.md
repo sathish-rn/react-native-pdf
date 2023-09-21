@@ -114,14 +114,14 @@ in the app `.vcxproj` file, before `<None Include="packages.config" />`.
 <details>
   <summary>FAQ details</summary>
 
-Q1. After installation and running, I can not see the pdf file.
+Q1. After installation and running, I can not see the pdf file.  
 A1: maybe you forgot to excute ```react-native link``` or it does not run correctly.
 You can add it manually. For detail you can see the issue [`#24`](https://github.com/wonday/react-native-pdf/issues/24) and [`#2`](https://github.com/wonday/react-native-pdf/issues/2)
 
-Q2. When running, it shows ```'Pdf' has no propType for native prop RCTPdf.acessibilityLabel of native type 'String'```
+Q2. When running, it shows ```'Pdf' has no propType for native prop RCTPdf.acessibilityLabel of native type 'String'```  
 A2. Your react-native version is too old, please upgrade it to 0.47.0+ see also [`#39`](https://github.com/wonday/react-native-pdf/issues/39)
 
-Q3. When I run the example app I get a white/gray screen / the loading bar isn't progressing .
+Q3. When I run the example app I get a white/gray screen / the loading bar isn't progressing .  
 A3. Check your uri, if you hit a pdf that is hosted on a `http` you will need to do the following:
 
 **iOS:**
@@ -151,10 +151,10 @@ add an exception for the server hosting the pdf in the ios `info.plist`. Here is
 **Android:**
 [`see here`](https://stackoverflow.com/questions/54818098/cleartext-http-traffic-not-permitted)
 
-Q4. why doesn't it work with react native expo?.
+Q4. why doesn't it work with react native expo?.  
 A4. Expo does not support native module. you can read more expo caveats [`here`](https://facebook.github.io/react-native/docs/getting-started.html#caveats)
 
-Q5. Why can't I run the iOS example? `'Failed to build iOS project. We ran "xcodebuild" command but it exited with error code 65.'`
+Q5. Why can't I run the iOS example? `'Failed to build iOS project. We ran "xcodebuild" command but it exited with error code 65.'`  
 A5. Run the following commands in the project folder (e.g. `react-native-pdf/example`) to ensure that all dependencies are available:
 ```
 yarn install (or npm install)
@@ -168,6 +168,29 @@ react-native run-ios
 ### ChangeLog
 <details>
   <summary>ChangeLog details</summary>
+
+v6.7.1
+1. Fixed: fix ios project setting
+2. Fixed: fix typo in RNPDFPdfViewManagerInterface interface causing android build error
+
+v6.7.0
+1. Fixed: fix(iOS): center page at tap point after double tap to zoom
+2. Fixed: add PDFKit to podspec to make ios compile
+3. Improved: Update build.gradle to support RN 0.71 on new arch
+4. Fixed: fix some small bugs and documents.
+
+v6.6.2
+1. Fixed: Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'
+2. Added: Decode File Path for iOS
+3. Improved: prefer current page for calculating scale factor on fit
+
+v6.6.1 depresed
+
+v6.6.0 depresed
+1. Fixed: Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'
+2. Added: Decode File Path for iOS
+3. Improved: prefer current page for calculating scale factor on fit
+4. Improved: Typescript version source
 
 v6.5.0
 1. Fix: replace mavenCentral with maven
@@ -186,42 +209,6 @@ v6.4.0
 v6.3.0
 1. Add windows support
 2. Fixed some bugs
-
-v6.2.2
-1. Fixed incorrect type of onPageSingleTap and onScaleChanged argument
-2. Fixed included missing setPage method in TypeScript and Flow types
-3. fixed Xcode 12 compatibility
-
-v6.2.1
-1. Fixed typescript `onLoadComplete()` definition
-2. Switched the AndroidPdfViewer dependency from Barteksc repo to TalbotGooday
-3. Add singlePage property
-
-v6.2.0
-1. Fixed ReferenceError, url should be source.uri
-2. Dependency bump to support React-Native >= 0.62
-
-v6.1.2
-1. Fixed wrong scale returned from onScaleChanged()
-2. Fixed iOS Double Tap zoom
-3. Fixed Some critical typo fixes
-
-v6.1.1
-1. Fixed undefined is not an object, crashing on ios
-
-v6.1.0
-1. Fixed react-native warning on `componentWill*`
-2. Fixed onPageSingleTap
-3. Set the PDF View background color to be transparent On iOS
-
-v6.0.1
-1. Expose prop to trust self-signed SSL certs
-2. Use ViewStyleProp in index.js.flow, not deprecated StyleSheet.Styles
-
-v6.0.0
-1. Add JS callback onPressLink for pdf link press listener
-2. Fix calling setState while unmounted
-
 
 [[more]](https://github.com/wonday/react-native-pdf/releases)
 
@@ -301,6 +288,8 @@ const styles = StyleSheet.create({
 | minScale         | number        | 1.0              | min scale| ✔   | ✔ | ✔ | 5.0.5 |
 | maxScale         | number        | 3.0              | max scale| ✔   | ✔ | ✔ | 5.0.5 |
 | horizontal    | bool          | false            | draw page direction, if you want to listen the orientation change, you can use  [[react-native-orientation-locker]](https://github.com/wonday/react-native-orientation-locker)| ✔   | ✔ | ✔ | <3.0 |
+| showsHorizontalScrollIndicator    | bool          | true            | shows or hides the horizontal scroll bar indicator on iOS| ✔   |  |  | 6.6 |
+| showsVerticalScrollIndicator    | bool          | true            | shows or hides the vertical scroll bar indicator on iOS| ✔   |  |  | 6.6 |
 | fitWidth      | bool          | false            | if true fit the width of view, can not use fitWidth=true together with scale| ✔   | ✔ | ✔ | <3.0, abandoned from 3.0 |
 | fitPolicy     | number        | 2                | 0:fit width, 1:fit height, 2:fit both(default)| ✔   | ✔ | ✔ | 3.0 |
 | spacing       | number        | 10               | the breaker size between pages| ✔   | ✔ | ✔ | <3.0 |

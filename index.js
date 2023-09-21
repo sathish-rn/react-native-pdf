@@ -10,17 +10,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-    requireNativeComponent,
     View,
     Platform,
-    ViewPropTypes,
     StyleSheet,
     Image,
-    Text
+    Text,
+    requireNativeComponent
 } from 'react-native';
-
+import PdfViewNativeComponent, {
+    Commands as PdfViewCommands,
+  } from './fabric/RNPDFPdfNativeComponent';
 import ReactNativeBlobUtil from 'react-native-blob-util'
-
+import {ViewPropTypes} from 'deprecated-react-native-prop-types';
 const SHA1 = require('crypto-js/sha1');
 import PdfView from './PdfView';
 
@@ -48,6 +49,8 @@ export default class Pdf extends Component {
         renderActivityIndicator: PropTypes.func,
         enableAntialiasing: PropTypes.bool,
         enableAnnotationRendering: PropTypes.bool,
+        showsHorizontalScrollIndicator: PropTypes.bool,
+        showsVerticalScrollIndicator: PropTypes.bool,
         enablePaging: PropTypes.bool,
         enableRTL: PropTypes.bool,
         fitPolicy: PropTypes.number,
@@ -82,6 +85,8 @@ export default class Pdf extends Component {
         page: 1,
         enableAntialiasing: true,
         enableAnnotationRendering: true,
+        showsHorizontalScrollIndicator: true,
+        showsVerticalScrollIndicator: true,
         enablePaging: false,
         enableRTL: false,
         trustAllCerts: true,
@@ -110,7 +115,6 @@ export default class Pdf extends Component {
             path: '',
             isDownloaded: false,
             progress: 0,
-            isSupportPDFKit: -1
         };
 
         this.lastRNBFTask = null;
@@ -137,14 +141,6 @@ export default class Pdf extends Component {
 
     componentDidMount() {
         this._mounted = true;
-        if (Platform.OS === "ios") {
-            const PdfViewManagerNative = require('react-native').NativeModules.PdfViewManager;
-            PdfViewManagerNative.supportPDFKit((isSupportPDFKit) => {
-                if (this._mounted) {
-                    this.setState({isSupportPDFKit: isSupportPDFKit ? 1 : 0});
-                }
-            });
-        }
         this._loadFromSource(this.props.source);
     }
 
@@ -238,7 +234,7 @@ export default class Pdf extends Component {
                 } else {
                     if (this._mounted) {
                        this.setState({
-                            path: uri.replace(/file:\/\//i, ''),
+                            path: unescape(uri.replace(/file:\/\//i, '')),
                             isDownloaded: true,
                         });
                     }
@@ -348,9 +344,19 @@ export default class Pdf extends Component {
         if ( (pageNumber === null) || (isNaN(pageNumber)) ) {
             throw new Error('Specified pageNumber is not a number');
         }
-        this.setNativeProps({
-            page: pageNumber
-        });
+        if (!!global?.nativeFabricUIManager ) {
+            if (this._root) {
+                PdfViewCommands.setNativePage(
+                    this._root,
+                    pageNumber,
+                );
+            }
+          } else {
+            this.setNativeProps({
+                page: pageNumber
+            });
+          }
+        
     }
 
     _onChange = (event) => {
@@ -409,7 +415,7 @@ export default class Pdf extends Component {
                                             onChange={this._onChange}
                                         />
                                     ):(
-                                        this.props.usePDFKit && this.state.isSupportPDFKit === 1?(
+                                        this.props.usePDFKit ?(
                                                 <PdfCustom
                                                     ref={component => (this._root = component)}
                                                     {...this.props}
@@ -439,21 +445,13 @@ export default class Pdf extends Component {
     }
 }
 
-
-if (Platform.OS === "android") {
-    var PdfCustom = requireNativeComponent('RCTPdf', Pdf, {
-        nativeOnly: {path: true, onChange: true},
-    })
-} else if (Platform.OS === "ios") {
-    var PdfCustom = requireNativeComponent('RCTPdfView', Pdf, {
-        nativeOnly: {path: true, onChange: true},
-    })
-} else if (Platform.OS === "windows") {
+if (Platform.OS === "android" || Platform.OS === "ios") {
+    var PdfCustom = PdfViewNativeComponent;
+}  else if (Platform.OS === "windows") {
     var PdfCustom = requireNativeComponent('RCTPdf', Pdf, {
         nativeOnly: {path: true, onChange: true},
     })
 }
-
 
 const styles = StyleSheet.create({
     progressContainer: {
